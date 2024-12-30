@@ -4,7 +4,8 @@
   "description": "The backend for peniel's church management system`",
   "main": "server.js",
   "scripts": {
-    "api": "nodemon server.js"
+    "start": "node server.js",
+    "dev": "concurrently \"nodemon server.js\""
   },
   "repository": {
     "type": "git",
