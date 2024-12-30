@@ -2,9 +2,9 @@
   "name": "backend",
   "version": "1.0.0",
   "description": "The backend for peniel's church management system`",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "api": "nodemon server.js"
   },
   "repository": {
     "type": "git",
@@ -13,13 +13,14 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
+  "type": "module",
   "bugs": {
     "url": "https://github.com/LitBowya/pcg_peniel_backend/issues"
   },
   "homepage": "https://github.com/LitBowya/pcg_peniel_backend#readme",
   "dependencies": {
     "bcrypt": "^5.1.1",
+    "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.3",
     "compression": "^1.7.5",
     "cors": "^2.8.5",
