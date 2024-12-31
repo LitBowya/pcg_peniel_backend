@@ -19,6 +19,16 @@ const userSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Role'
     },
+    otp: {
+        type: String, // Store the OTP temporarily
+    },
+    otpExpiration: {
+        type: Date, // Store when the OTP expires
+    },
+    isVerified: {
+        type: Boolean,
+        default: false, // False by default, becomes true after successful OTP verification
+    },
 });
 
 userSchema.pre('save', async function (next) {
