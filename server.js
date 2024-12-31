@@ -10,11 +10,14 @@ import morgan from 'morgan';
 // Config files
 import connectDB from './config/db.js';
 import initializeRoles from './config/initializeRoles.js';
+import assetsRoutes from "./routes/assetsRoutes.js";
 
 // Routes
 import authRoutes from './routes/authRoutes.js';
+import donationsRoutes from "./routes/donationsRoutes.js";
+import eventsRoutes from "./routes/eventsRoutes.js";
+import ministryRoutes from './routes/ministryRoutes.js';
 import roleRoutes from './routes/roleRoutes.js';
-import superAdminRoutes from './routes/superAdminRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 
 // Utils files
@@ -40,7 +43,10 @@ app.use(compression());  // Compresses the response bodies for better performanc
 app.use('/api/auth', authRoutes);
 app.use('/api/roles', roleRoutes);
 app.use('/api/users', userRoutes);
-app.use('/api/super', superAdminRoutes);
+app.use('/api/assets', assetsRoutes);
+app.use('/api/ministries', ministryRoutes);
+app.use('/api/donations', donationsRoutes);
+app.use('/api/events', eventsRoutes);
 
 // Initialize roles
 initializeRoles();

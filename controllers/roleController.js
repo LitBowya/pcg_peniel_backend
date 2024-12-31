@@ -25,7 +25,6 @@ const assignRole = async (req, res) => {
         res.status(500).json({ message: `Error assigning role: ${error.message}` });
     }
 };
-
 const createRole = async (req, res) => {
     try {
         const { name, permissions } = req.body;
@@ -44,7 +43,6 @@ const createRole = async (req, res) => {
         res.status(500).json({ message: `Error creating role: ${error.message}` });
     }
 };
-
 const updateRole = async (req, res) => {
     try {
         const { roleId, permissions } = req.body;
@@ -63,7 +61,6 @@ const updateRole = async (req, res) => {
         res.status(500).json({ message: `Error updating role: ${error.message}` });
     }
 };
-
 const deleteRole = async (req, res) => {
     try {
         const { roleId } = req.body;
@@ -79,5 +76,37 @@ const deleteRole = async (req, res) => {
         res.status(500).json({ message: `Error deleting role: ${error.message}` });
     }
 };
+const getAllRoles = async (req, res) => {
+    try {
+        const roles = await Role.find();
+        if (!roles) return res.status(404).json({ message: 'Roles not found.' });
+        res.status(200).json(roles);
+    } catch (error) {
+        res.status(500).json({ message: `Error fetching roles: ${error.message}` });
+    }
+};
+const updateUserRole = async (req, res) => {
+    try {
+        const { userId, newRoleId } = req.body;
+        
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found.' });
+        }
+        
+        const newRole = await Role.findById(newRoleId);
+        if (!newRole) {
+            return res.status(404).json({ message: 'Role not found.' });
+        }
+        
+        user.role = newRole._id;
+        await user.save();
+        
+        res.status(200).json({ message: `User role updated successfully.` });
+    } catch (error) {
+        res.status(500).json({ message: `Error updating user role: ${error.message}` });
+    }
+};
 
-export {assignRole, createRole, updateRole, deleteRole}
+
+export {assignRole,getAllRoles,updateUserRole, createRole, updateRole, deleteRole}
