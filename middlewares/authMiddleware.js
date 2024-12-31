@@ -1,58 +1,55 @@
-import jwt from 'jsonwebtoken';
-import User from '../models/User.js'; // Adjust the path to your User model
+import jwt from "jsonwebtoken";
+import User from "../models/User.js";
 
-// Protect middleware to verify the JWT token
-const protect = (req, res, next) => {
-    let token;
-    
-    // Check if the authorization header is present and starts with "Bearer"
-    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
-        try {
-            // Extract the token from the authorization header
-            token = req.headers.authorization.split(' ')[1];
-            // Verify the token using the JWT_SECRET environment variable
-            const decoded = jwt.verify(token, process.env.JWT_SECRET);
-            // Attach the decoded user ID to the request object
-            req.user = decoded.userId;
-            // Proceed to the next middleware
-            next();
-        } catch (error) {
-            // If the token is invalid, return a 401 Unauthorized response
-            res.status(401).json({ message: 'Not authorized' });
-        }
-    } else {
-        // If there's no token in the header, return a 401 Unauthorized response
-        res.status(401).json({ message: 'Not authorized, no token' });
-    }
-};
-
-// Middleware to check if the user has "Super Admin" role
-const isSuperAdmin = async (req, res, next) => {
+const protect = async (req, res, next) => {
     try {
-        // Extract the token from the authorization header
-        const token = req.headers.authorization?.split(' ')[1];
+        // Read JWT from the 'jwt' cookie
+        const token = req.cookies?.jwt;
         
-        // If no token, return a 401 Unauthorized response
         if (!token) {
-            return res.status(401).json({ message: 'Unauthorized. Token missing.' });
+            return res.status(401).json({ message: "Not authorized, no token" });
         }
         
         // Verify the token using the JWT_SECRET environment variable
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        // Find the user by ID and populate the role
-        const user = await User.findById(decoded.id).populate('role');
         
-        // If the user doesn't have the "Super Admin" role, return a 403 Forbidden response
-        if (user.role?.name !== 'Super Admin') {
-            return res.status(403).json({ message: 'Access denied. Only Super Admins can perform this action.' });
+        // Fetch the user and attach it to the request object (excluding password)
+        req.user = await User.findById(decoded.userId).select("-password").populate('role');
+        
+        if (!req.user) {
+            return res.status(401).json({ message: "Not authorized, user not found" });
         }
         
-        // Proceed to the next middleware
         next();
     } catch (error) {
-        // If an error occurs during token verification, return a 401 Unauthorized response
-        res.status(401).json({ message: `Unauthorized: ${error.message}` });
+        res.status(401).json({ message: `Not authorized, token failed: ${error.message}` });
     }
 };
 
-export { protect, isSuperAdmin };
+// Middleware to check if the user has one of the allowed roles
+const checkRoles = (...allowedRoles) => {
+    return (req, res, next) => {
+        try {
+            // Check if the user's role is in the list of allowed roles
+            if (!allowedRoles.includes(req.user?.role?.name)) {
+                return res.status(403).json({
+                    message: `Access denied. Only ${allowedRoles.join(' or ')} users can perform this action.`
+                });
+            }
+            
+            next();
+        } catch (error) {
+            res.status(401).json({ message: `Unauthorized: ${error.message}` });
+        }
+    };
+};
+
+// Role-specific middleware using the generic checkRoles function
+const isSuperAdmin = checkRoles('Super Admin')
+const isAdmin = checkRoles("Admin");
+const isFinance = checkRoles("Finance");
+const isAdminOrSuperAdmin = checkRoles("Admin", "Super Admin");
+const isAdminOrFinance = checkRoles("Admin", "Finance");
+const isSuperAdminOrFinance = checkRoles("Super Admin", "Finance");
+
+export { protect, isSuperAdmin, isAdmin,  isAdminOrSuperAdmin, isFinance, isAdminOrFinance, isSuperAdminOrFinance };

@@ -1,7 +1,7 @@
 import Role from '../models/Role.js';
 import User from '../models/User.js';
 
-export const assignRole = async (req, res) => {
+const assignRole = async (req, res) => {
     try {
         const { userId, roleName } = req.body;
         
@@ -25,3 +25,59 @@ export const assignRole = async (req, res) => {
         res.status(500).json({ message: `Error assigning role: ${error.message}` });
     }
 };
+
+const createRole = async (req, res) => {
+    try {
+        const { name, permissions } = req.body;
+        
+        // Check if the role already exists
+        const existingRole = await Role.findOne({ name });
+        if (existingRole) {
+            return res.status(400).json({ message: 'Role already exists.' });
+        }
+        
+        const newRole = new Role({ name, permissions });
+        await newRole.save();
+        
+        res.status(201).json({ message: `Role ${name} created successfully.` });
+    } catch (error) {
+        res.status(500).json({ message: `Error creating role: ${error.message}` });
+    }
+};
+
+const updateRole = async (req, res) => {
+    try {
+        const { roleId, permissions } = req.body;
+        
+        const role = await Role.findById(roleId);
+        if (!role) {
+            return res.status(404).json({ message: 'Role not found.' });
+        }
+        
+        // Update permissions for the role
+        role.permissions = permissions;
+        await role.save();
+        
+        res.status(200).json({ message: `Role ${role.name} updated successfully.` });
+    } catch (error) {
+        res.status(500).json({ message: `Error updating role: ${error.message}` });
+    }
+};
+
+const deleteRole = async (req, res) => {
+    try {
+        const { roleId } = req.body;
+        
+        const role = await Role.findById(roleId);
+        if (!role) {
+            return res.status(404).json({ message: 'Role not found.' });
+        }
+        
+        await role.deleteOne();
+        res.status(200).json({ message: `Role ${role.name} deleted successfully.` });
+    } catch (error) {
+        res.status(500).json({ message: `Error deleting role: ${error.message}` });
+    }
+};
+
+export {assignRole, createRole, updateRole, deleteRole}

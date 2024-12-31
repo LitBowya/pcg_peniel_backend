@@ -5,6 +5,7 @@ const initializeRoles = async () => {
         { name: 'Super Admin', permissions: ['all'] },
         { name: 'Admin', permissions: ['manage_users', 'view_reports'] },
         { name: 'Finance', permissions: ['manage_finances'] },
+        { name: 'Member', permissions: [] }, // Default role with no special permissions
     ];
     
     for (const role of defaultRoles) {
