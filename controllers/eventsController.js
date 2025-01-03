@@ -42,4 +42,5 @@ const getEvents = async (req, res) => {
     }
 };
 
+
 export {createEvent, updateEvent, deleteEvent, getEvents}

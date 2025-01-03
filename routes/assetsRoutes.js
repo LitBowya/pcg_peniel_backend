@@ -5,8 +5,8 @@ import {isAdminOrSuperAdmin, isSuperAdmin, protect} from "../middlewares/authMid
 const router = express.Router();
 
 // Asset routes
-router.post('/', protect,isSuperAdmin, addAsset); // Add an asset
-router.put('/:id', protect,isSuperAdmin, updateAsset); // Update an asset
+router.post('/', protect,isAdminOrSuperAdmin, addAsset); // Add an asset
+router.put('/:id', protect,isAdminOrSuperAdmin, updateAsset); // Update an asset
 router.delete('/:id',protect, isSuperAdmin, deleteAsset); // Delete an asset
 router.get('/',protect, isAdminOrSuperAdmin, getAssets); // Fetch all assets
 

@@ -50,6 +50,6 @@ const isAdmin = checkRoles("Admin");
 const isFinance = checkRoles("Finance");
 const isAdminOrSuperAdmin = checkRoles("Admin", "Super Admin");
 const isAdminOrFinance = checkRoles("Admin", "Finance");
-const isSuperAdminOrFinance = checkRoles("Super Admin", "Finance");
+const isSuperAdminOrFinance = checkRoles( "Finance", "Super Admin");
 
 export { protect, isSuperAdmin, isAdmin,  isAdminOrSuperAdmin, isFinance, isAdminOrFinance, isSuperAdminOrFinance };

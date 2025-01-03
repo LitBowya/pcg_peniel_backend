@@ -11,13 +11,17 @@ import morgan from 'morgan';
 import connectDB from './config/db.js';
 import initializeRoles from './config/initializeRoles.js';
 import assetsRoutes from "./routes/assetsRoutes.js";
+import auditRoutes from "./routes/auditRoutes.js";
 
 // Routes
 import authRoutes from './routes/authRoutes.js';
 import donationsRoutes from "./routes/donationsRoutes.js";
 import eventsRoutes from "./routes/eventsRoutes.js";
+import expenseRoutes from "./routes/expenseRoutes.js";
+import financialRoutes from "./routes/financialRoutes.js";
 import ministryRoutes from './routes/ministryRoutes.js';
 import roleRoutes from './routes/roleRoutes.js';
+import titheRoutes from "./routes/titheRoutes.js";
 import userRoutes from './routes/userRoutes.js';
 
 // Utils files
@@ -38,7 +42,6 @@ app.use(bodyParser.json());  // Parses incoming JSON bodies
 app.use(bodyParser.urlencoded({ extended: true }));  // Parses form data
 app.use(compression());  // Compresses the response bodies for better performance
 
-
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/roles', roleRoutes);
@@ -47,9 +50,13 @@ app.use('/api/assets', assetsRoutes);
 app.use('/api/ministries', ministryRoutes);
 app.use('/api/donations', donationsRoutes);
 app.use('/api/events', eventsRoutes);
+app.use('/api/finances', financialRoutes);
+app.use('/api/expenses', expenseRoutes);
+app.use('/api/audit', auditRoutes);
+app.use('/api/tithes', titheRoutes);
 
 // Initialize roles
-initializeRoles();
+initializeRoles()
 
 // Start the server
 const PORT = process.env.PORT || 8000;

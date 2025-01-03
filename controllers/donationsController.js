@@ -3,8 +3,8 @@ import Donation from '../models/Donation.js';
 // Donations
 const createDonation = async (req, res) => {
     try {
-        const { amount, donor, description } = req.body;
-        const donation = await Donation.create({ amount, donor, description });
+        const { amount, donor, description, event } = req.body;
+        const donation = await Donation.create({ amount, donor, description, event });
         res.status(201).json(donation);
     } catch (error) {
         res.status(500).json({ message: `Error creating donation: ${error.message}` });
@@ -12,9 +12,8 @@ const createDonation = async (req, res) => {
 };
 const getDonations = async (req, res) => {
     try {
-        const donations = await Donation.find();
+        const donations = await Donation.find().populate('donor').populate('event');
         if (!donations) return res.status(404).json({ message: 'Donations not found.' });
-        
         res.status(200).json(donations);
     } catch (error) {
         res.status(500).json({ message: `Error fetching donations: ${error.message}` });
@@ -30,5 +29,15 @@ const deleteDonation = async (req, res) => {
         res.status(500).json({ message: `Error deleting donation: ${error.message}` });
     }
 };
+const getEventDonations = async (req, res) => {
+    try {
+        const { eventId } = req.params;
+        const donations = await Donation.find({ event: eventId }).populate('donor');
+        if (!donations) return res.status(404).json({ message: 'Donations for this event not found.' });
+        res.status(200).json(donations);
+    } catch (error) {
+        res.status(500).json({ message: `Error fetching event donations: ${error.message}` });
+    }
+};
 
-export {createDonation, getDonations, deleteDonation}
+export {createDonation, getDonations, deleteDonation, getEventDonations}
