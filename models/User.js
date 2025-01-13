@@ -1,5 +1,14 @@
-import bcrypt from 'bcrypt';
-import mongoose from 'mongoose';
+import bcrypt from "bcrypt";
+import mongoose from "mongoose";
+
+const ministriesEnum = [
+    "Children Service",
+    "Junior Youth",
+    "Youth People's Guild",
+    "Young Adult Fellowship",
+    "Men's Fellowship",
+    "Women's Fellowship",
+];
 
 const userSchema = new mongoose.Schema({
     name: {
@@ -13,6 +22,11 @@ const userSchema = new mongoose.Schema({
     },
     password: {
         type: String,
+        required: true,
+    },
+    ministry: {
+        type: String,
+        enum: ministriesEnum,
         required: true,
     },
     role: {
