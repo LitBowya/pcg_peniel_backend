@@ -3,8 +3,8 @@ import Event from '../models/Event.js';
 // Events
 const createEvent = async (req, res) => {
     try {
-        const { title, date, description, venue } = req.body;
-        const event = await Event.create({ title, date, description, venue });
+        const { title, date, time, description, venue } = req.body;
+        const event = await Event.create({ title, date,time, description, venue });
         res.status(201).json(event);
     } catch (error) {
         res.status(500).json({ message: `Error creating event: ${error.message}` });
